@@ -1,0 +1,32 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+    <th:block th:if="${not #lists.isEmpty(lstCategory.getResultList())}" th:each="category, iter : ${lstCategory.getResultList()}">
+        <tr>
+            <td class="text-center tb-checkbox">
+                <div class="checkbox">
+                    <input type="checkbox" class="checkItem" th:attr="data-id=${category.id}"><label></label>
+                </div>
+            </td>
+            <td class="text-center" th:text="${(iter.index+1) + (lstCategory.getPageIndex() - 1) * lstCategory.getPageSize()}"></td>
+            <td>[[${category.name}]]</td>
+            <td>[[${category.usercreated}]]</td>
+            <td>[[${#dates.format(category.datecreated, 'dd/MM/yyyy')}]]</td>
+            <td class="text-center">
+                <!-- Sửa loại sản phẩm -->
+                <a class="text-inverse" id="btnEditCategory" href="javascript: ;" th:attr="data-id=${category.id}" title="Sửa thông tin loại sản phẩm">
+                    <i class="fa fa-edit"></i>
+                </a>
+                <!-- Xóa vai trò -->
+                <a class="text-inverse" id="btnDeleteCategory" href="javascript: ;" th:attr="data-id=${category.id}" title="Xóa thông tin loại sản phẩm">
+                    <i class="fa fa-trash"></i>
+                </a>
+            </td>
+        </tr>
+    </th:block>
+
+    <th:block th:unless="${not #lists.isEmpty(lstCategory.getResultList())}">
+        <tr>
+            <td colspan="6" class="text-center">Không có dữ liệu</td>
+        </tr>
+    </th:block>
+    <input type="hidden" id="data_paging" th:attr="data-total=${lstCategory.getTotalPage()}, data-totalrecord=${lstCategory.getTotalRecord()}, data-page=${lstCategory.getPageIndex()}"/>
+</th:block>

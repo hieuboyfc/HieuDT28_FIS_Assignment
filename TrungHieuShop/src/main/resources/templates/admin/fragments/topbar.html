@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+    <title>Topbar</title>
+</head>
+
+<body>
+    <div class="topbar" th:fragment="top_bar">
+        <!-- LOGO -->
+        <div class="topbar-left">
+            <div class="text-center">
+                <a th:href="@{/admin/home}" class="logo"><span>Trung Hiếu Shop</span></a>
+            </div>
+        </div>
+        <!-- Button mobile view to collapse sidebar menu -->
+        <div class="navbar navbar-default" role="navigation">
+            <div class="container">
+                <div class="">
+                    <div class="pull-left">
+                        <button class="button-menu-mobile open-left">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <span class="clearfix"></span>
+                    </div>
+
+                    <ul class="nav navbar-nav navbar-right pull-right">
+                        <li class="hidden-xs">
+                            <a href="#" id="btn-fullscreen" class="waves-effect waves-light"><i class="md md-crop-free"></i></a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="javascript: ;" class="dropdown-toggle profile" data-toggle="dropdown" aria-expanded="true" title="Thông tin tài khoản">
+                                <img th:if="${#authentication.getPrincipal() == null}" th:src="@{/login/library/images/hieuboyfc.JPG}"  alt="user-img" class="img-circle" />
+                                <img th:unless="${#authentication.getPrincipal() == null}" th:src="${#authentication.getPrincipal().getAvatar() != null ? #authentication.getPrincipal().getAvatar() : '/login/library/images/hieuboyfc.JPG'} "  alt="user-img" class="img-circle" />
+                            </a>
+                            <ul class="dropdown-menu" sec:authorize="isAuthenticated()">
+                                <li sec:authorize="hasAnyAuthority('/admin/user/profile')"><a th:href="@{/admin/user/profile}"><i class="md md-face-unlock"></i> Thông tin cá nhân</a></li>
+                                <li><a th:href="@{/logout}"><i class="md md-settings-power"></i> Đăng xuất</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      layout:decorator="admin/layouts/admin_template">
+<head>
+    <title>Trang chủ</title>
+    <th:block th:fragment="css"></th:block>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h4 class="pull-left page-title">1</h4>
+                <ol class="breadcrumb pull-right">
+                    <li><a th:href="@{/admin/home}">2</a></li>
+                    <li class="active">3</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="script"></th:block>
+</body>
+</html>

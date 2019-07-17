@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layouts/admin_template">
+<head>
+    <title>Trung Hiếp Shop - Quản lý thông tin hãng sản xuất</title>
+    <th:block layout:fragment="css">
+        <link th:href="@{/admin/library/css/chosen.min.css}" rel="stylesheet" type="text/css"/>
+        <link th:href="@{/admin/library/assets/datatables/jquery.dataTables.min.css}" rel="stylesheet"/>
+        <link th:href="@{/admin/library/assets/responsive-table/rwd-table.min.css}" rel="stylesheet"/>
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h4 class="pull-left page-title">Quản lý thông tin hãng sản xuất</h4>
+                <ol class="breadcrumb pull-right">
+                    <li><a th:href="@{/admin/home}">Trang chủ</a></li>
+                    <li class="active">Quản lý hãng sản xuất</li>
+                </ol>
+            </div>
+        </div>
+        <!-- Tìm Kiếm -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h5>ĐIỀU KIỆN TÌM KIẾM</h5>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-inline" role="form">
+                            <div class="form-group col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                                <input style="width: 100%" type="text" class="form-control" id="manufacturer_search_name" placeholder="Vui lòng nhập tên hãng sản xuất để tìm kiếm">
+                            </div>
+                            <button class="btn btn-inverse waves-effect waves-light m-l-10" id="btnManufacturerSearch">
+                                <i class="fa fa-filter"></i> Tìm kiếm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Danh sách hãng sản xuất -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h5 class="portlet-title text-dark text-uppercase">
+                              DANH SÁCH HÃNG SẢN XUẤT
+                        </h5>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="panel panel-purple ad-panel-function">
+                            <div class="panel-body">
+                                <!-- Thêm mới -->
+                                <button class="btn btn-inverse waves-effect waves-light m-l-10" id="btnAddNew" title="Thêm mới hãng sản xuất">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                                <div class="pull-right">
+                                    <h5 style="margin: 9px 10px;">Tổng số bản ghi : [[${lstManufacturer.getTotalRecord()}]]</h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive-role">
+                            <table class="table table-bordered dataTable table-hover" id="data_table_manufacturer">
+                                <thead>
+                                <tr>
+                                    <th class="text-center tb-checkbox">
+                                        <div class="checkbox">
+                                            <input type="checkbox" class="checkItemAll"><label></label>
+                                        </div>
+                                    </th>
+                                    <th class="text-center" id="th_stt">#</th>
+                                    <th class="sort sorting" data-col="name">TÊN HÃNG SẢN XUẤT</th>
+                                    <th class="sort sorting" data-col="usercreated">NGƯỜI TẠO</th>
+                                    <th class="sort sorting" data-col="datecreated">NGÀY TẠO</th>
+                                    <th class="text-center">CHỨC NĂNG</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <th:block th:if="${not #lists.isEmpty(lstManufacturer.getResultList())}" th:each="manufacturer, iter : ${lstManufacturer.getResultList()}">
+                                    <tr>
+                                        <td class="text-center tb-checkbox">
+                                            <div class="checkbox">
+                                                <input type="checkbox" class="checkItem" th:attr="data-id=${manufacturer.id}"><label></label>
+                                            </div>
+                                        </td>
+                                        <td class="text-center" th:text="${(iter.index+1) + (lstManufacturer.getPageIndex() - 1) * lstManufacturer.getPageSize()}"></td>
+                                        <td>[[${manufacturer.name}]]</td>
+                                        <td>[[${manufacturer.usercreated}]]</td>
+                                        <td>[[${#dates.format(manufacturer.datecreated, 'dd/MM/yyyy')}]]</td>
+                                        <td class="text-center">
+                                            <!-- Sửa hãng sản xuất -->
+                                            <a class="text-inverse" id="btnEditManufacturer" href="javascript: ;" th:attr="data-id=${manufacturer.id}" title="Cập nhật thông tin hãng sản xuất">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <!-- Xóa vai trò -->
+                                            <a class="text-inverse" id="btnDeleteManufacturer" href="javascript: ;" th:attr="data-id=${manufacturer.id}" title="Xóa thông tin hãng sản xuất">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </th:block>
+
+                                <th:block th:unless="${not #lists.isEmpty(lstManufacturer.getResultList())}">
+                                    <tr>
+                                        <td colspan="6" class="text-center">Không có dữ liệu</td>
+                                    </tr>
+                                </th:block>
+                                <input type="hidden" id="data_paging" th:attr="data-total=${lstManufacturer.getTotalPage()}, data-totalrecord=${lstManufacturer.getTotalRecord()}, data-page=${lstManufacturer.getPageIndex()}"/>
+                                </tbody>
+                            </table>
+                            <!-- Show bản ghi -->
+                            <div class="page_option" style="padding-top: 20px;">
+                                <th:block th:if="${lstManufacturer.getTotalPage() > 1}">
+                                    <div class="page_home">
+                                        <div class="col-xs-12 col-md-4 form-inline">
+                                            <label>
+                                                Hiển thị
+                                                <select class="form-control" id="show_page">
+                                                    <option value="2">2</option>
+                                                    <option value="20">20</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                    <option value="150">150</option>
+                                                    <option value="200">200</option>
+                                                </select>
+                                                Bản ghi
+                                            </label>
+                                        </div>
+                                        <div class="col-xs-12 col-md-8">
+                                            <div class="dataTables_paginate">
+                                                <div class="pagination" id="pagination"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Thêm Mới Loại Sản Phẩm -->
+        <div class="modal fade fade-scale" id="manufacturerModal" role="dialog" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-custom modal-full" style="max-width: 1000px; margin: 4px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">Thêm mới thông tin hãng sản xuất</h4>
+                    </div>
+                    <form class="form-horizontal" id="formManufacturer">
+                        <div class="modal-body">
+                            <!-- Tên hãng sản xuất -->
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Tên hãng sản xuất<span class="required">*</span> : </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="txtManufacturer_Name" id="inpManufacturer_Name" placeholder="" maxlength="50"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-inverse waves-effect waves-light m-b-5" id="btnSubmitManufacturer" style="margin-bottom: 0;">
+                                <i class="fa fa-check-square-o"></i> Thêm mới
+                            </button>
+                            <button type="button" class="btn btn-inverse waves-effect waves-light m-b-5" id="btnClose" style="margin-bottom: 0;" data-dismiss="modal">
+                                <i class="fa fa-times"></i> Đóng
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="script">
+    <script type="text/javascript" th:src="@{/admin/library/assets/jquery.validate/jquery.validate.min.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/library/js/jquery.twbsPagination.min.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/library/js/chosen.jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/backend/manufacturer/manufacturer.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/backend/utils/validate.js}"></script></th:block>
+</body>
+</html>

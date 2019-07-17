@@ -1,0 +1,16 @@
+﻿- Admin: 
+	http://localhost:8080/admin/home
+	username/password: admin/123@123aA
+- Quản lý:
+	http://localhost:8080/admin/home
+	username/password: hieuboyfc/123@123aA
+- Thành viên:
+	http://localhost:8080/public/home
+	username/password: hieudt28/123@123aA
+
+- Môi trường IDE: Intellij Idea
+- Môi trường Database: MySQL
+
+- Lưu ý khi chạy project: Cài thêm lombok, cập nhập lại JavaScript 6.0 trong Intellij
+
+=> Do em bị nhập viện tuần trước nên là bài sẽ khó đạt yêu cầu, trường hợp xấu em thử viết đơn 

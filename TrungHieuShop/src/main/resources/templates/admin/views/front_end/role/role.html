@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layouts/admin_template">
+<head>
+    <title>Trung Hiếp Shop - Quản lý thông tin vai trò</title>
+    <th:block layout:fragment="css">
+        <link th:href="@{/admin/library/css/chosen.min.css}" rel="stylesheet" type="text/css"/>
+        <link th:href="@{/admin/library/assets/datatables/jquery.dataTables.min.css}" rel="stylesheet"/>
+        <link th:href="@{/admin/library/assets/responsive-table/rwd-table.min.css}" rel="stylesheet"/>
+        <link th:href="@{/admin/library/assets/nestable/jquery.nestable.css}" rel="stylesheet"/>
+        <link th:href="@{/admin/library/css/jquery.mCustomScrollbar.min.css}" rel="stylesheet">
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h4 class="pull-left page-title">Quản lý thông tin vai trò</h4>
+                <ol class="breadcrumb pull-right">
+                    <li><a th:href="@{/admin/home}">Trang chủ</a></li>
+                    <li class="active">Quản lý vai trò</li>
+                </ol>
+            </div>
+        </div>
+        <!-- Tìm Kiếm -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h5>ĐIỀU KIỆN TÌM KIẾM</h5>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-inline" role="form">
+                            <div class="form-group col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                                <input style="width: 100%" type="text" class="form-control" id="role_search_rolename" placeholder="Vui lòng nhập tên vai trò để tìm kiếm">
+                            </div>
+                            <button class="btn btn-inverse waves-effect waves-light m-l-10" id="btnRoleSearch">
+                                <i class="fa fa-filter"></i> Tìm kiếm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Danh sách nhóm người dùng -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h5 class="portlet-title text-dark text-uppercase">
+                              DANH SÁCH VAI TRÒ NGƯỜI DÙNG
+                        </h5>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="panel panel-purple ad-panel-function">
+                            <div class="panel-body">
+                                <!-- Thêm mới -->
+                                <button class="btn btn-inverse waves-effect waves-light m-l-10" id="btnAddNew" title="Thêm mới vai trò">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                                <!-- Xóa -->
+                                <button class="btn btn-inverse waves-effect waves-light m-l-10" id="btnDelete" disabled title="Xóa vai trò">
+                                    <i class="fa fa-trash-o"></i>
+                                </button>
+
+                                <div class="pull-right">
+                                    <h5 style="margin: 9px 10px;">Tổng số bản ghi : [[${lstRole.getTotalRecord()}]]</h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive-role">
+                            <table class="table table-bordered dataTable table-hover" id="data_table_role">
+                                <thead>
+                                <tr>
+                                    <th class="text-center tb-checkbox">
+                                        <div class="checkbox">
+                                            <input type="checkbox" class="checkItemAll"><label></label>
+                                        </div>
+                                    </th>
+                                    <th class="text-center" id="th_stt">#</th>
+                                    <th class="sort sorting" data-col="name">TÊN VAI TRÒ</th>
+                                    <th class="text-center">CHỨC NĂNG</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <th:block th:if="${not #lists.isEmpty(lstRole.getResultList())}" th:each="role, iter : ${lstRole.getResultList()}">
+                                    <tr>
+                                        <td class="text-center tb-checkbox">
+                                            <div class="checkbox">
+                                                <input type="checkbox" class="checkItem" th:attr="data-id=${role.id}"><label></label>
+                                            </div>
+                                        </td>
+                                        <td class="text-center" th:text="${(iter.index+1) + (lstRole.getPageIndex() - 1) * lstRole.getPageSize()}"></td>
+                                        <td>[[${role.name}]]</td>
+                                        <td class="text-center">
+                                            <!-- Sửa vai trò -->
+                                            <a class="text-inverse" id="btnEditRole" href="javascript: ;" th:attr="data-id=${role.id}" title="Phân quyền cho vai trò">
+                                                <i class="fa fa-sitemap"></i>
+                                            </a>
+                                            <!-- Xóa vai trò -->
+                                            <a class="text-inverse" id="btnDeleteRole" href="javascript: ;" th:attr="data-id=${role.id}" title="Xóa thông tin vai trò">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </th:block>
+
+                                <th:block th:unless="${not #lists.isEmpty(lstRole.getResultList())}">
+                                    <tr>
+                                        <td colspan="4" class="text-center">Không có dữ liệu</td>
+                                    </tr>
+                                </th:block>
+                                <input type="hidden" id="data_paging" th:attr="data-total=${lstRole.getTotalPage()}, data-totalrecord=${lstRole.getTotalRecord()}, data-page=${lstRole.getPageIndex()}"/>
+                                </tbody>
+                            </table>
+                            <!-- Show bản ghi -->
+                            <div class="page_option" style="padding-top: 20px;">
+                                <th:block th:if="${lstRole.getTotalPage() > 1}">
+                                    <div class="page_home">
+                                        <div class="col-xs-12 col-md-4 form-inline">
+                                            <label>
+                                                Hiển thị
+                                                <select class="form-control" id="show_page">
+                                                    <option value="2">2</option>
+                                                    <option value="20">20</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                    <option value="150">150</option>
+                                                    <option value="200">200</option>
+                                                </select>
+                                                Bản ghi
+                                            </label>
+                                        </div>
+                                        <div class="col-xs-12 col-md-8">
+                                            <div class="dataTables_paginate">
+                                                <div class="pagination" id="pagination"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Thêm Mới Nhóm Người Dùng -->
+        <div class="modal fade fade-scale" id="roleModal" role="dialog" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-custom modal-full" style="max-width: 1400px; margin: 4px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">Thêm mới thông tin vai trò</h4>
+                    </div>
+                    <form class="form-horizontal" id="formRole">
+                        <div class="modal-body">
+                            <!-- Tên vai trò -->
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Tên vai trò<span class="required">*</span> : </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="txtRole_Rolename" id="inpRole_Rolename" placeholder="" maxlength="100"/>
+                                </div>
+                            </div>
+                            <!-- Danh sách chức năng -->
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Danh sách nhóm chức năng<span class="required">*</span> : </label>
+                                <div class="col-sm-10">
+                                    <div class="role-tree">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-inverse waves-effect waves-light m-b-5" id="btnSubmitRole" style="margin-bottom: 0;">
+                                <i class="fa fa-check-square-o"></i> Thêm mới
+                            </button>
+                            <button type="button" class="btn btn-inverse waves-effect waves-light m-b-5" id="btnClose" style="margin-bottom: 0;" data-dismiss="modal">
+                                <i class="fa fa-times"></i> Đóng
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="script">
+    <script type="text/javascript" th:src="@{/admin/library/assets/jquery.validate/jquery.validate.min.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/library/js/jquery.twbsPagination.min.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/library/js/chosen.jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/library/js/jquery.mCustomScrollbar.min.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/library/js/tree_role/tree.min.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/library/js/tree_role/custom_tree.min.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/backend/role/role.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/backend/utils/validate.js}"></script></th:block>
+</body>
+</html>

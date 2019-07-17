@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layouts/admin_template">
+<head>
+    <title>Trung Hiếp Shop - Quản lý thông tin tài khoản</title>
+    <th:block layout:fragment="css">
+        <link th:href="@{/admin/library/css/chosen.min.css}" rel="stylesheet" type="text/css"/>
+        <link th:href="@{/admin/library/assets/timepicker/bootstrap-datepicker.min.css}" rel="stylesheet"/>
+        <link th:href="@{/admin/library/assets/datatables/jquery.dataTables.min.css}" rel="stylesheet"/>
+        <!-- Responsive Table -->
+        <link th:href="@{/admin/library/assets/responsive-table/rwd-table.min.css}" rel="stylesheet"/>
+        <link th:href="@{/admin/library/css/jquery.mCustomScrollbar.min.css}" rel="stylesheet">
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h4 class="pull-left page-title">Quản lý thông tin tài khoản</h4>
+                <ol class="breadcrumb pull-right">
+                    <li><a th:href="@{/admin/home}">Trang chủ</a></li>
+                    <li class="active">Quản lý tài khoản</li>
+                </ol>
+            </div>
+        </div>
+        <!-- Tìm Kiếm -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h5>ĐIỀU KIỆN TÌM KIẾM</h5>
+                    </div>
+                        <div class="panel-body">
+                        <div class="form-inline ad-search-form" role="form">
+
+                            <!-- Username -->
+                            <div class="form-group col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                                <label class="col-lg-5 col-md-5 col-sm-6 col-xs-6">Tên tài khoản: </label>
+                                <div class="col-lg-7 col-md-7 col-sm-6 col-xs-6">
+                                    <input type="text" class="form-control" id="user_search_username" />
+                                </div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="form-group col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                                <label class="col-lg-5 col-md-5 col-sm-6 col-xs-6">Địa chỉ email: </label>
+                                <div class="col-lg-7 col-md-7 col-sm-6 col-xs-6">
+                                    <input type="text" class="form-control" id="user_search_email" />
+                                </div>
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="form-group col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                                <label class="col-lg-5 col-md-5 col-sm-6 col-xs-6">Số điện thoại: </label>
+                                <div class="col-lg-7 col-md-7 col-sm-6 col-xs-6">
+                                    <input type="text" class="form-control" id="user_search_phone" />
+                                </div>
+                            </div>
+
+                            <!-- Tìm Kiếm -->
+                            <div class="form-group col-md-12 col-sm-12 col-xs-12 text-right">
+                                <button class="btn btn-inverse waves-effect waves-light m-l-10 text-right" id="btnUserSearch">
+                                    <i class="fa fa-filter"></i> Tìm kiếm
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Danh sách tài khoản -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h5 class="portlet-title text-dark text-uppercase">
+                            DANH SÁCH TÀI KHOẢN NGƯỜI DÙNG
+                        </h5>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="panel panel-purple ad-panel-function">
+                            <div class="panel-body">
+                                <!-- Thêm mới -->
+                                <button class="btn btn-inverse waves-effect waves-light m-l-10" id="btnAddNew" title="Thêm mới thông tin tài khoản">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                                <!-- Đặt lại mật khẩu -->
+                                <button class="btn btn-inverse waves-effect waves-light m-l-10" id="btnResetPass" disabled title="Khôi phục mật khẩu cho tài khoản">
+                                    <i class="fa fa-cog"></i>
+                                </button>
+                                <!-- Khóa/Mở khóa -->
+                                <button class="btn btn-inverse waves-effect waves-light m-l-10" id="btnLockOrUnlock" disabled title="Khóa/Mở khóa tài khoản">
+                                    <i class="fa fa-lock"></i>
+                                </button>
+
+                                <div class="pull-right">
+                                    <h5 style="margin: 9px 10px;">Tổng số bản ghi : [[${lstUser.getTotalRecord()}]]</h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive-user">
+                            <table class="table table-bordered dataTable table-hover" id="data_table_user">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center tb-checkbox">
+                                            <div class="checkbox">
+                                                <input type="checkbox" class="checkItemAll"><label></label>
+                                            </div>
+                                        </th>
+                                        <th class="text-center" id="th_stt">#</th>
+                                        <th class="sort sorting" data-col="username">TÊN TÀI KHOẢN</th>
+                                        <th class="sort sorting" data-col="email">EMAIL</th>
+                                        <th class="sort sorting" data-col="phone">SỐ ĐIỆN THOẠI</th>
+                                        <th class="sort sorting" data-col="fullname">HỌ VÀ TÊN</th>
+                                        <th class="sort sorting" data-col="gender">GIỚI TÍNH</th>
+                                        <th class="sort sorting" data-col="birthday">NGÀY SINH</th>
+                                        <th class="sort sorting" data-col="islock">TRẠNG THÁI</th>
+                                        <th class="text-center">CHỨC NĂNG</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <th:block th:if="${not #lists.isEmpty(lstUser.getResultList())}" th:each="user, iter : ${lstUser.getResultList()}">
+                                        <tr>
+                                            <td class="text-center tb-checkbox">
+                                                <div class="checkbox">
+                                                    <input type="checkbox" class="checkItem" th:attr="data-id=${user.id}"><label></label>
+                                                </div>
+                                            </td>
+                                            <td class="text-center" th:text="${(iter.index+1) + (lstUser.getPageIndex() - 1) * lstUser.getPageSize()}"></td>
+                                            <td>[[${user.username}]]</td>
+                                            <td>[[${user.email}]]</td>
+                                            <td>[[${user.phone}]]</td>
+                                            <td>[[${user.fullname}]]</td>
+                                            <td>
+                                                <th:block th:if="${user.gender == '1'}">
+                                                    <span>Nam</span>
+                                                </th:block>
+                                                <th:block th:if="${user.gender == '2'}">
+                                                    <span>Nữ</span>
+                                                </th:block>
+                                                <th:block th:if="${user.gender == '0'}">
+                                                    <span>Khác</span>
+                                                </th:block>
+                                            </td>
+                                            <td>[[${#dates.format(user.birthday,'dd/MM/yyyy')}]]</td>
+                                            <td class="text-center">
+                                                <th:block th:if="${user.islock}">
+                                                    <span class="label_status label-inverse2">Ngừng hoạt động</span>
+                                                </th:block>
+                                                <th:block th:unless="${user.islock}">
+                                                    <span class="label_status label-inverse2">Đang hoạt động</span>
+                                                </th:block>
+                                            </td>
+                                            <td class="text-center">
+                                                <!-- Xem tài khoản -->
+                                                <a class="text-inverse" id="btnViewUser" href="javascript: ;" th:attr="data-id=${user.id}" title="Xem chi tiết thông tin tài khoản">
+                                                    <i class="fa fa-search bigger-130"></i>
+                                                </a>
+                                                <!-- Sửa tài khoản -->
+                                                <a class="text-inverse" id="btnEditUser" href="javascript: ;" th:attr="data-id=${user.id}" title="Sửa chi tiết thông tin tài khoản">
+                                                    <i class="fa fa-edit bigger-130"></i>
+                                                </a>
+                                                <!-- Khóa tài khoản -->
+                                                <th:block th:if="${user.islock}">
+                                                    <a class="text-inverse" id="btnUnlockUser" href="javascript: ;" th:attr="data-id=${user.id}" title="Mở khóa thông tin tài khoản">
+                                                        <i class="fa fa-unlock-alt bigger-130"></i>
+                                                    </a>
+                                                </th:block>
+                                                <th:block th:unless="${user.islock}">
+                                                    <a class="text-inverse" id="btnLockUser" href="javascript: ;" th:attr="data-id=${user.id}" title="Khóa thông tin tài khoản">
+                                                        <i class="fa fa-lock bigger-130"></i>
+                                                    </a>
+                                                </th:block>
+                                                <!-- Reset mật khẩu tài khoản -->
+                                                <a class="text-inverse" id="btnResetPassUser" href="javascript: ;" th:attr="data-id=${user.id}" title="Khôi phục lại mật khẩu cho tài khoản">
+                                                    <i class="fa fa-cog bigger-130"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </th:block>
+
+                                    <th:block th:unless="${not #lists.isEmpty(lstUser.getResultList())}">
+                                        <tr>
+                                            <td colspan="10" class="text-center">Không có dữ liệu</td>
+                                        </tr>
+                                    </th:block>
+                                <input type="hidden" id="data_paging" th:attr="data-total=${lstUser.getTotalPage()}, data-totalrecord=${lstUser.getTotalRecord()}, data-page=${lstUser.getPageIndex()}"/>
+                                </tbody>
+                            </table>
+                            <!-- Show bản ghi -->
+                            <div class="page_option" style="padding-top: 20px;">
+                                <th:block th:if="${lstUser.getTotalPage() > 1}">
+                                    <div class="page_home">
+                                        <div class="col-xs-12 col-md-4 form-inline">
+                                            <label>
+                                                Hiển thị
+                                                <select class="form-control" id="show_page">
+                                                    <option value="2">2</option>
+                                                    <option value="20">20</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                    <option value="150">150</option>
+                                                    <option value="200">200</option>
+                                                </select>
+                                               Bản ghi
+                                            </label>
+                                        </div>
+                                        <div class="col-xs-12 col-md-8">
+                                            <div class="dataTables_paginate">
+                                                <div class="pagination" id="pagination"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Thêm Mới Người Dùng -->
+        <div class="modal fade fade-scale" id="userModal" role="dialog" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-custom modal-full" style="max-width: 1200px; margin: 4px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">Thêm mới thông tin tài khoản</h4>
+                    </div>
+                    <form class="form-horizontal" id="formUser">
+                        <div class="modal-body">
+                            <!-- Người dùng -->
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Tên tài khoản<span class="required">*</span> : </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="txtUser_Username" id="inpUser_Username" placeholder="" maxlength="50"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="password">
+                                <!-- Mật khẩu -->
+                                <label class="col-sm-2 control-label">Mật khẩu<span class="required">*</span> : </label>
+                                <div class="col-sm-4">
+                                    <input type="password" class="form-control" name="txtUser_Password" id="inpUser_Password" placeholder="" maxlength="100"/>
+                                </div>
+
+                                <!-- Xác nhận lại mật khẩu -->
+                                <label class="col-sm-2 control-label">Xác nhận lại mật khẩu<span class="required">*</span> : </label>
+                                <div class="col-sm-4">
+                                    <input type="password" class="form-control" name="txtUser_ConfirmPassword" id="inpUser_ConfirmPassword" placeholder="" maxlength="100"/>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <!-- Tên đầy đủ -->
+                                <label class="col-sm-2 control-label">Họ và tên<span class="required">*</span> : </label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" name="txtUser_Fullname" id="inpUser_Fullname"  placeholder="" maxlength="50"/>
+                                </div>
+
+                                <!-- Ngày Sinh -->
+                                <label class="col-sm-2 control-label">Ngày sinh : </label>
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="inpUser_Birthday" placeholder=""/>
+                                        <span class="input-group-addon btnBirthday button"><i class="glyphicon glyphicon-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <!-- Email -->
+                                <label class="col-sm-2 control-label">Địa chỉ email<span class="required">*</span> : </label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" name="txtUser_Email" id="inpUser_Email"  placeholder="" maxlength="50"/>
+                                </div>
+
+                                <!-- Phone -->
+                                <label class="col-sm-2 control-label">Số điện thoại<span class="required">*</span> : </label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" name="txtUser_Phone" id="inpUser_Phone" placeholder="" maxlength="20"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <!-- Giới tính -->
+                                <label class="col-sm-2 control-label">Giới tính : </label>
+                                <div class="col-sm-4">
+                                    <select class="form-control" id="slUser_Gender">
+                                        <option value="1">Nam</option>
+                                        <option value="2">Nữ</option>
+                                        <option value="0">Khác</option>
+                                    </select>
+                                </div>
+
+                                <!-- Địa chỉ -->
+                                <label class="col-sm-2 control-label">Địa chỉ : </label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" name="txtUser_Address" id="inpUser_Address" placeholder="" maxlength="100"/>
+                                </div>
+                            </div>
+
+                            <!-- Nhóm quyền -->
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Nhóm quyền<span class="required">*</span> : </label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" id="slUser_RoleGroup" name="txtUser_RoleGroup" multiple="multiple">
+                                        <th:block th:each="item: ${lstRole}">
+                                            <option th:value="${item.id}" th:text="${item.name}"></option>
+                                        </th:block>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Khóa -->
+                            <div class="form-group" id="lock">
+                                <label class="col-sm-2 control-label">Khóa : </label>
+                                <div class="col-sm-10">
+                                    <div class="checkbox checkbox-danger">
+                                        <input id="inpUser_Islock" type="checkbox">
+                                        <label></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Lý do khóa -->
+                            <div class="form-group" id="lockRegion">
+                                <label class="col-sm-2 control-label">Lý do khóa : </label>
+                                <div class="col-sm-10">
+                                    <textarea rows="3" class="form-control" name="txtUser_Lockreason" id="inpUser_Lockreason" maxlength="100"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-inverse waves-effect waves-light m-b-5" id="btnSubmitUser" style="margin-bottom: 0;">
+                                <i class="fa fa-check-square-o"></i> Thêm mới
+                            </button>
+                            <button type="button" class="btn btn-inverse waves-effect waves-light m-b-5" id="btnClose" style="margin-bottom: 0;" data-dismiss="modal">
+                                <i class="fa fa-times"></i> Đóng
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="script">
+    <script type="text/javascript" th:src="@{/admin/library/assets/jquery.validate/jquery.validate.min.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/library/js/jquery.twbsPagination.min.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/library/js/chosen.jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/library/assets/timepicker/bootstrap-datepicker.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/library/js/jquery.mCustomScrollbar.min.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/backend/user/user.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/backend/utils/validate.js}"></script>
+</th:block>
+</body>
+</html>

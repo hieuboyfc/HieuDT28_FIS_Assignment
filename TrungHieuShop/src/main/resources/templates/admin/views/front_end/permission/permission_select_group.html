@@ -1,0 +1,12 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+    <option th:value="0">Lựa chọn</option>
+    <th:block th:include="this::groupPermission_select(${lstSelectGroupPermission}, 1)"></th:block>
+    <th:block th:fragment="groupPermission_select(group, lv)">
+        <th:block th:each="groupPermission: ${group}">
+            <option th:value="${groupPermission.id}">
+                <span th:text="${#strings.substring('-------------------------------------', 0, lv * 3)}"></span> [[${groupPermission.name}]]
+            </option>
+            <th:block th:unless="${#lists.isEmpty(groupPermission.getLstGroupPermissionModel())}" th:include="this::groupPermission_select(${groupPermission.getLstGroupPermissionModel()}, ${lv * 2})"></th:block>
+        </th:block>
+    </th:block>
+</th:block>

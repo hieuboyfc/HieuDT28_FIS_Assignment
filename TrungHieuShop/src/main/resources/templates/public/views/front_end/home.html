@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      layout:decorator="public/layouts/layout">
+<head>
+    <title>Trang chủ</title>
+    <th:block th:fragment="public_css"></th:block>
+</head>
+
+<body>
+<div class="products-catagories-area clearfix" layout:fragment="content">
+    <!-- Product Catagories Area Start -->
+    <div class="amado-pro-catagory clearfix">
+        <!-- Single Catagory -->
+        <th:block th:if="${not #lists.isEmpty(lstProduct.getResultList())}"
+                  th:each="product, iter : ${lstProduct.getResultList()}">
+            <div class="single-products-catagory clearfix">
+                <a class="product-detail" th:attr="data-id = ${product.id}" title="Click vào để xem chi tiết">
+                    <img th:if="${product.imageLink == null}" th:src="@{/public/library/img/bg-img/1.jpg}" alt="">
+                    <img th:unless="${product.imageLink == null}" th:src="${product.imageLink}" alt="">
+                    <!-- Hover Content -->
+                    <div class="hover-content">
+                        <div class="line"></div>
+                        <p>Đơn giá:
+                            <th:block th:if="${product.price > 0}">
+                                [[${#numbers.formatInteger(product.price,3,'POINT')}]] VNĐ
+                            </th:block>
+                            <th:block th:unless="${product.price > 0}">
+                                Chưa có giá
+                            </th:block>
+                        </p>
+                        <h4>Tên sản phẩm: [[${product.name}]]</h4>
+                    </div>
+                </a>
+            </div>
+        </th:block>
+        <th:block th:unless="${not #lists.isEmpty(lstProduct.getResultList())}">
+            <div class="text-center" style="padding-top: 200px; font-size: 30px">Chưa có sản phẩm</div>
+        </th:block>
+    </div>
+</div>
+<th:block layout:fragment="public_script">
+    <script type="text/javascript" th:src="@{/public/backend/home/home.js}"></script>
+</th:block>
+</body>
+</html>

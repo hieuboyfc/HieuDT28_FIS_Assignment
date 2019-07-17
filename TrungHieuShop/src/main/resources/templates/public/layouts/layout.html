@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Trung Hiếu Shop</title>
+    <th:block th:replace="public/fragments/header :: public_shared_css"></th:block>
+    <th:block layout:fragment="public_css"></th:block>
+</head>
+<body>
+<div class="main-content-wrapper d-flex clearfix">
+    <div th:replace="public/fragments/menu :: public_menu_left"></div>
+    <div layout:fragment="content">
+
+    </div>
+</div>
+<section th:replace="public/fragments/newsletter :: public_newsletter"></section>
+<footer th:replace="public/fragments/footer :: public_footer"></footer>
+<th:block th:replace="public/fragments/script :: public_shared_script"></th:block>
+<th:block layout:fragment="public_script"></th:block>
+</body>
+</html>

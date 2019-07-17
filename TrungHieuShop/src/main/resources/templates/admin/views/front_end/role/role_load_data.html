@@ -1,0 +1,30 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+    <th:block th:if="${not #lists.isEmpty(lstRole.getResultList())}" th:each="role, iter : ${lstRole.getResultList()}">
+        <tr>
+            <td class="text-center tb-checkbox">
+                <div class="checkbox">
+                    <input type="checkbox" class="checkItem" th:attr="data-id=${role.id}"><label></label>
+                </div>
+            </td>
+            <td class="text-center" th:text="${(iter.index+1) + (lstRole.getPageIndex() - 1) * lstRole.getPageSize()}"></td>
+            <td>[[${role.name}]]</td>
+            <td class="text-center">
+                <!-- Sửa vai trò -->
+                <a class="text-inverse" id="btnEditRole" href="javascript: ;" th:attr="data-id=${role.id}" title="Phân quyền cho vai trò">
+                    <i class="fa fa-sitemap"></i>
+                </a>
+                <!-- Xóa vai trò -->
+                <a class="text-inverse" id="btnDeleteRole" href="javascript: ;" th:attr="data-id=${role.id}" title="Xóa thông tin vai trò">
+                    <i class="fa fa-trash"></i>
+                </a>
+            </td>
+        </tr>
+    </th:block>
+
+    <th:block th:unless="${not #lists.isEmpty(lstRole.getResultList())}">
+        <tr>
+            <td colspan="4" class="text-center">Không có dữ liệu</td>
+        </tr>
+    </th:block>
+    <input type="hidden" id="data_paging" th:attr="data-total=${lstRole.getTotalPage()}, data-totalrecord=${lstRole.getTotalRecord()}, data-page=${lstRole.getPageIndex()}"/>
+</th:block>

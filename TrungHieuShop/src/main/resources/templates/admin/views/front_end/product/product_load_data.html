@@ -1,0 +1,63 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+    <th:block th:if="${not #lists.isEmpty(lstProduct.getResultList())}" th:each="product, iter : ${lstProduct.getResultList()}">
+        <tr>
+            <td class="text-center tb-checkbox">
+                <div class="checkbox">
+                    <input type="checkbox" class="checkItem" th:attr="data-id=${product.id}"><label></label>
+                </div>
+            </td>
+            <td class="text-center" th:text="${(iter.index+1) + (lstProduct.getPageIndex() - 1) * lstProduct.getPageSize()}"></td>
+            <td>[[${product.name}]]</td>
+            <td>[[${product.code}]]</td>
+            <td>[[${product.categoryName}]]</td>
+            <td>[[${product.manufacturerName}]]</td>
+            <td>
+                <th:block th:if="${product.price > 0}">
+                    [[${#numbers.formatInteger(product.price,3,'POINT')}]] VNĐ
+                </th:block>
+            </td>
+            <td>[[${product.quantity}]]</td>
+            <td class="text-center">
+                <th:block th:if="${product.status == 1}">
+                    <span class="label_status label-inverse2">Đang còn hàng</span>
+                </th:block>
+                <th:block th:if="${product.status == 2}">
+                    <span class="label_status label-inverse2">Đang giảm giá</span>
+                </th:block>
+                <th:block th:if="${product.status == 3}">
+                    <span class="label_status label-inverse2">Sắp ra mắt</span>
+                </th:block>
+                <th:block th:if="${product.status == 4}">
+                    <span class="label_status label-inverse2">Tạm hết hàng</span>
+                </th:block>
+            </td>
+            <td class="text-center">
+                <!-- Xem ảnh -->
+                <th:block th:if="${product.imageLink != null}">
+                    <a class="text-inverse" id="btnViewImage" href="javascript: ;" th:attr="data-id=${product.id}, data-image=${product.imageLink}" title="Xem ảnh sản phẩm">
+                        <i class="fa fa-image"></i>
+                    </a>
+                </th:block>
+                <!-- Xem sản phẩm -->
+                <a class="text-inverse" id="btnViewProduct" href="javascript: ;" th:attr="data-id=${product.id}" title="Xem thông tin sản phẩm">
+                    <i class="fa fa-search"></i>
+                </a>
+                <!-- Sửa sản phẩm -->
+                <a class="text-inverse" id="btnEditProduct" href="javascript: ;" th:attr="data-id=${product.id}" title="Cập nhật thông tin sản phẩm">
+                    <i class="fa fa-edit"></i>
+                </a>
+                <!-- Xóa sản phẩm -->
+                <a class="text-inverse" id="btnDeleteProduct" href="javascript: ;" th:attr="data-id=${product.id}" title="Xóa thông tin sản phẩm">
+                    <i class="fa fa-trash"></i>
+                </a>
+            </td>
+        </tr>
+    </th:block>
+
+    <th:block th:unless="${not #lists.isEmpty(lstProduct.getResultList())}">
+        <tr>
+            <td colspan="10" class="text-center">Không có dữ liệu</td>
+        </tr>
+    </th:block>
+    <input type="hidden" id="data_paging" th:attr="data-total=${lstProduct.getTotalPage()}, data-totalrecord=${lstProduct.getTotalRecord()}, data-page=${lstProduct.getPageIndex()}"/>
+</th:block>

@@ -1,0 +1,67 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+    <th:block th:if="${not #lists.isEmpty(lstUser.getResultList())}" th:each="user, iter : ${lstUser.getResultList()}">
+        <tr>
+            <td class="text-center tb-checkbox">
+                <div class="checkbox">
+                    <input type="checkbox" class="checkItem" th:attr="data-id=${user.id}"><label></label>
+                </div>
+            </td>
+            <td class="text-center" th:text="${(iter.index + 1) + (lstUser.getPageIndex() - 1) * lstUser.getPageSize()}"></td>
+            <td>[[${user.username}]]</td>
+            <td>[[${user.email}]]</td>
+            <td>[[${user.phone}]]</td>
+            <td>[[${user.fullname}]]</td>
+            <td>
+                <th:block th:if="${user.gender == '1'}">
+                    <span>Nam</span>
+                </th:block>
+                <th:block th:if="${user.gender == '2'}">
+                    <span>Nữ</span>
+                </th:block>
+                <th:block th:if="${user.gender == '3'}">
+                    <span>Khác</span>
+                </th:block>
+            </td>
+            <td>[[${#dates.format(user.birthday,'dd/MM/yyyy')}]]</td>
+            <td class="text-center">
+                <th:block th:if="${user.islock}">
+                    <span class="label_status label-inverse2">Ngừng hoạt động</span>
+                </th:block>
+                <th:block th:unless="${user.islock}">
+                    <span class="label_status label-inverse2">Đang hoạt động</span>
+                </th:block>
+            </td>
+            <td class="text-center">
+                <!-- Xem tài khoản -->
+                <a class="text-inverse" id="btnViewUser" href="javascript: ;" th:attr="data-id=${user.id}" title="Xem chi tiết thông tin tài khoản">
+                    <i class="fa fa-search bigger-130"></i>
+                </a>
+                <!-- Sửa tài khoản -->
+                <a class="text-inverse" id="btnEditUser" href="javascript: ;" th:attr="data-id=${user.id}" title="Sửa chi tiết thông tin tài khoản">
+                    <i class="fa fa-edit bigger-130"></i>
+                </a>
+                <!-- Khóa tài khoản -->
+                <th:block th:if="${user.islock}">
+                    <a class="text-inverse" id="btnUnlockUser" href="javascript: ;" th:attr="data-id=${user.id}" title="Khóa thông tin tài khoản">
+                        <i class="fa fa-unlock-alt bigger-130"></i>
+                    </a>
+                </th:block>
+                <th:block th:unless="${user.islock}">
+                    <a class="text-inverse" id="btnLockUser" href="javascript: ;" th:attr="data-id=${user.id}" title="Mở khóa thông tin tài khoản">
+                        <i class="fa fa-lock bigger-130"></i>
+                    </a>
+                </th:block>
+                <!-- Reset mật khẩu tài khoản -->
+                <a class="text-inverse" id="btnResetPassUser" href="javascript: ;" th:attr="data-id=${user.id}" title="Khôi phục lại mật khẩu cho tài khoản">
+                    <i class="fa fa-cog bigger-130"></i>
+                </a>
+            </td>
+        </tr>
+    </th:block>
+    <th:block th:unless="${not #lists.isEmpty(lstUser.getResultList())}">
+        <tr>
+            <td colspan="10" class="text-center">Chưa có dữ liệu</td>
+        </tr>
+    </th:block>
+    <input type="hidden" id="data_paging" th:attr="data-total=${lstUser.getTotalPage()}, data-totalrecord=${lstUser.getTotalRecord()}, data-page=${lstUser.getPageIndex()}"/>
+</th:block>

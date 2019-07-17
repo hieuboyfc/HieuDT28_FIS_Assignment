@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+    <title>Menu</title>
+</head>
+
+<body>
+<div class="left side-menu" th:fragment="menu_left">
+    <div class="sidebar-inner slimscrollleft">
+        <div class="user-details">
+            <div class="pull-left">
+                <img th:if="${#authentication.getPrincipal() == null}" th:src="@{/login/library/images/hieuboyfc.JPG}" alt="" class="thumb-md img-circle">
+                <img th:unless="${#authentication.getPrincipal() == null}" th:src="${#authentication.getPrincipal().getAvatar() != null ? #authentication.getPrincipal().getAvatar() : '/login/library/images/hieuboyfc.JPG'}" alt="" class="thumb-md img-circle">
+            </div>
+            <div class="user-info">
+                <div class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" sec:authorize="isAuthenticated()">
+                        [[${#strings.capitalize(#authentication.getPrincipal().getFullname())}]]
+                    </a>
+                    <ul class="dropdown-menu" sec:authorize="isAuthenticated()">
+                        <li sec:authorize="hasAnyAuthority('/admin/user/profile')"><a th:href="@{/admin/user/profile}"><i class="md md-face-unlock"></i> Thông tin cá nhân</a></li>
+                        <li><a th:href="@{/logout}"><i class="md md-settings-power"></i> Đăng xuất</a></li>
+                    </ul>
+                </div>
+
+                <p class="text-muted m-0" sec:authorize="isAuthenticated()" style="overflow: hidden;">
+                    <i class="fa fa-clock-o"></i> [[${#dates.format(#dates.createNow(), 'dd-MM-yyyy')}]]
+                </p>
+            </div>
+        </div>
+        <!--- Divider -->
+        <div id="sidebar-menu">
+            <ul>
+                <!--Trang chủ-->
+                <li>
+                    <a th:href="@{/admin/home}" th:class="${active == 'home'}? 'active waves-effect' : 'waves-effect'">
+                        <i class="md md-home"></i><span>Trang chủ</span>
+                    </a>
+                </li>
+
+                <!-- Quản lý danh mục -->
+                <li class="has_sub" sec:authorize="hasAnyAuthority('/admin/category', '/admin/manufacturer', '/admin/product')">
+                    <a href="#" class="waves-effect" th:class="${active == 'category' or active == 'manufacturer' or active == 'product'} ? 'subdrop' : null">
+                        <i class="md md-view-list"></i>
+                        <span> Quản lý danh mục </span>
+                        <span class="pull-right">
+                             <th:block th:if="${active == 'category' or active == 'manufacturer' or active == 'product'}">
+                               <i class="md md-remove"></i>
+                           </th:block>
+                            <th:block th:unless="${active == 'category' or active == 'manufacturer' or active == 'product'}">
+                                <i class="md md-add"></i>
+                            </th:block>
+                        </span>
+                    </a>
+                    <ul sec:authorize="hasAnyAuthority('/admin/category', '/admin/manufacturer', '/admin/product')" class="list-unstyled" th:style="${active == 'category' or active == 'manufacturer' or active == 'product'} ? 'display: block;' : null">
+                        <li sec:authorize="hasAuthority('/admin/category')" th:class="${active == 'category'} ? 'active' : null">
+                            <a th:href="@{/admin/category}">Quản lý loại sản phẩm</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('/admin/manufacturer')" th:class="${active == 'manufacturer'} ? 'active' : null">
+                            <a th:href="@{/admin/manufacturer}">Quản lý hãng sản xuất</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('/admin/product')" th:class="${active == 'product'} ? 'active' : null">
+                            <a th:href="@{/admin/product}">Quản lý sản phẩm</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Quản lý người dùng -->
+                <li class="has_sub" sec:authorize="hasAnyAuthority('/admin/user', '/admin/role', '/admin/permission')">
+                    <a href="javascript: ;" class="waves-effect" th:class="${active == 'user'  or active == 'role' or active == 'permission'} ? 'subdrop' : null">
+                        <i class="md md-assignment-ind"></i>
+                        <span> Quản lý người dùng </span>
+                        <span class="pull-right">
+                           <th:block th:if="${active == 'user' or active == 'role' or active == 'permission'}">
+                               <i class="md md-remove"></i>
+                           </th:block>
+                            <th:block th:unless="${active == 'user' or active == 'role' or active == 'permission'}">
+                                <i class="md md-add"></i>
+                            </th:block>
+                        </span>
+                    </a>
+                    <ul sec:authorize="hasAnyAuthority('/admin/user', '/admin/role', '/admin/permission')" class="list-unstyled" th:style="${active == 'user' or active == 'role' or active == 'permission'} ? 'display: block;' : null">
+                        <li sec:authorize="hasAuthority('/admin/user')" th:class="${active == 'user'} ? 'active' : null">
+                            <a th:href="@{/admin/user}">Quản lý tài khoản</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('/admin/role')" th:class="${active == 'role'} ? 'active' : null">
+                            <a th:href="@{/admin/role}">Quản lý vai trò</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('/admin/permission')" th:class="${active == 'permission'} ? 'active' : null">
+                            <a th:href="@{/admin/permission}">Quản lý nhóm chức năng</a>
+                        </li>
+                    </ul>
+                </li>
+
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+</body>
+
+</html>

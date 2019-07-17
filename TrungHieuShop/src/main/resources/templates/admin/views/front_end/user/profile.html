@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layouts/admin_template">
+<head>
+    <title>Trung Hiếu Shop - Thông tin cá nhân</title>
+    <th:block th:fragment="css">
+        <link th:href="@{/admin/library/assets/timepicker/bootstrap-datepicker.min.css}" rel="stylesheet" />
+        <link th:href="@{/admin/library/css/chosen.min.css}" rel="stylesheet" type="text/css"/>
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h4 class="pull-left page-title">Quản lý thông tin cá nhân</h4>
+                <ol class="breadcrumb pull-right">
+                    <li><a th:href="@{/admin/home}">Trang chủ</a></li>
+                    <li class="active">Quản lý thông tin cá nhân</li>
+                </ol>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="bg-picture text-center" th:style="'background-image:url(/admin/library/images/big/bg.jpg)'">
+                    <div class="bg-picture-overlay"></div>
+                    <div class="profile-info-name">
+                        <img th:if="${user.avatar == null}" th:src="@{/login/library/images/no-avatar.png}" alt="profile-image" class="thumb-lg img-circle img-thumbnail" />
+                        <img th:unless="${user.avatar == null}" th:src="${user.avatar}" alt="profile-image" class="thumb-lg img-circle img-thumbnail" />
+                        <h3 class="text-white" th:text="${user.fullname}"></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <ul class="nav nav-tabs tabs">
+                    <li class="active tab" >
+                        <a href="#settings" data-toggle="tab" aria-expanded="false" class="active">
+                            <span class="visible-xs"><i class="fa fa-cog"></i></span>
+                            <span class="hidden-xs">Thông tin cá nhân</span>
+                        </a>
+                    </li>
+                    <li class="tab" >
+                        <a href="#changePassword" data-toggle="tab" aria-expanded="false">
+                            <span class="visible-xs"><i class="fa fa-cog"></i></span>
+                            <span class="hidden-xs">Thay đổi mật khẩu</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="tab-content profile-tab-content">
+                    <div class="tab-pane active" id="settings">
+                        <!-- Thông tin cá nhân -->
+                        <div class="panel panel-default panel-fill">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Quản lý thông tin cá nhân</h3>
+                            </div>
+                            <form class="form-horizontal" id="formProfile">
+                                <div class="panel-body">
+                                    <!-- Họ và Tên -->
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Họ và tên</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" th:value="${user.fullname}" id="inpProfile_Fullname" name="txtProfile_Fullname" placeholder="Hiếu Boy" maxlength="50"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Địa chỉ Email -->
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Địa chỉ email</label>
+                                        <div class="col-sm-10">
+                                            <input type="email" class="form-control" th:value="${user.email}" id="inpProfile_Email" name="txtProfile_Email" placeholder="hieuboyfc@gmail.com" maxlength="50"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Ngày sinh, Số điện thoại -->
+                                    <div class="form-group">
+                                        <!-- Ngày sinh -->
+                                        <label class="col-sm-2 control-label">Ngày sinh</label>
+                                        <div class="col-sm-4">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" th:value="${#dates.format(user.birthday, 'dd/MM/yyyy')}" data-date-format="dd/MM/yyyy" id="inpProfile_Birthday" name="txtProfile_Birthday" placeholder="dd/MM/yyyy">
+                                                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                        <!-- Số điện thoại -->
+                                        <label class="col-sm-2 control-label">Số điện thoại</label>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" th:value="${user.phone}" id="inpProfile_Phone" name="txtProfile_Phone" placeholder="0793321897" maxlength="20"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Địa chỉ -->
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Địa chỉ liên hệ</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" th:value="${user.address}" id="inpProfile_Address" name="txtProfile_Address" placeholder="Tiên Lãng - Hải Phòng" maxlength="100"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Hình Ảnh -->
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label"></label>
+                                        <div class="col-sm-10">
+                                            <img th:if="${user.avatar == null}" th:src="@{/login/library/images/no-avatar.png}" width="100" title="Ảnh đại diện" class="avatar" />
+                                            <img th:unless="${user.avatar == null}" th:src="${user.avatar}" width="120" title="Ảnh đại diện" class="avatar"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Upload Hình Ảnh -->
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Ảnh đại diện</label>
+                                        <div class="col-sm-8">
+                                            <input type="file" class="form-control" name="files" id="files" accept="image/gif, image/jpeg, image/png, image/jpg" />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <button class="btn btn-info waves-effect waves-light w-md" id="btnUploadAvatar" type="button">
+                                                <i class="fa fa-upload"></i> Tải ảnh lên
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel-footer text-center">
+                                    <button class="btn btn-success waves-effect waves-light w-md" type="submit">
+                                        <i class="fa fa-check-square-o"></i> Cập nhật thông tin
+                                    </button>
+                                    <button class="btn btn-danger waves-effect waves-light w-md" type="reset">
+                                        <i class="fa fa-refresh"></i> Làm mới
+                                    </button>
+                                </div>
+                                <br>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="changePassword">
+                        <!-- Thay đổi mật khẩu -->
+                        <div class="panel panel-default panel-fill">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Thay đổi thông tin mật khẩu</h3>
+                            </div>
+                            <form class="form-horizontal" id="formChangePassword">
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Mật khẩu cũ</label>
+                                        <div class="col-sm-10">
+                                            <input type="password" class="form-control" id="inpProfile_OldPassword" name="txtProfile_OldPassword" placeholder="*************"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Mật khẩu mới</label>
+                                        <div class="col-sm-10">
+                                            <input type="password" class="form-control" id="inpProfile_Password" name="txtProfile_Password" placeholder="*************"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Xác nhận lại mật khẩu mới</label>
+                                        <div class="col-sm-10">
+                                            <input type="password" class="form-control" id="inpProfile_RePassword" name="txtProfile_RePassword" placeholder="*************"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-footer text-center">
+                                    <button class="btn btn-success waves-effect waves-light w-md" type="submit">
+                                        <i class="fa fa-check-square-o"></i> Cập nhật mật khẩu
+                                    </button>
+                                    <button class="btn btn-danger waves-effect waves-light w-md" type="reset">
+                                        <i class="fa fa-refresh"></i> Làm mới
+                                    </button>
+                                </div>
+                                <br>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script type="text/javascript" th:src="@{/admin/library/assets/jquery.validate/jquery.validate.min.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/library/assets/timepicker/bootstrap-datepicker.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/library/js/chosen.jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/backend/user/profile.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/backend/utils/validate.js}"></script>
+</th:block>
+</body>
+</html>

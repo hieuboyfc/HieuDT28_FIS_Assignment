@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      layout:decorator="public/layouts/layout">
+<head>
+    <title>Trang chủ</title>
+    <th:block th:fragment="public_css"></th:block>
+</head>
+
+<body>
+<div class="products-catagories-area clearfix" layout:fragment="content">
+    <div class="single-product-area section-padding-100 clearfix">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mt-50">
+                            <li class="breadcrumb-item"><a th:href="@{/public/home}">Trang chủ</a></li>
+                            <li class="breadcrumb-item"><span>Chi tiết sản phẩm</span></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-lg-7">
+                    <div class="single_product_thumb">
+                        <div id="product_details_slider" class="carousel slide" data-ride="carousel">
+                            <ol class="carousel-indicators">
+                                <li class="active" data-target="#product_details_slider" data-slide-to="0" style="background-image: url(/public/library/img/product-img/pro-big-1.jpg);">
+                                </li>
+                                <li data-target="#product_details_slider" data-slide-to="1" style="background-image: url(/public/library/img/product-img/pro-big-2.jpg);" class="">
+                                </li>
+                                <li data-target="#product_details_slider" data-slide-to="2" style="background-image: url(/public/library/img/product-img/pro-big-3.jpg);" class="">
+                                </li>
+                                <li data-target="#product_details_slider" data-slide-to="3" style="background-image: url(/public/library/img/product-img/pro-big-4.jpg);" class="">
+                                </li>
+                            </ol>
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <th:block th:if="${product.imageLink == ''}">
+                                        <a class="gallery_img" th:href="@{/public/library/img/product-img/pro-big-1.jpg}">
+                                            <img class="d-block w-100" th:src="@{/public/library/img/bg-img/1.jpg}" alt="Ảnh 1">
+                                            <img class="d-block w-100" th:unless="${product.imageLink == null}" th:src="${product.imageLink}" alt="Ảnh 1">
+                                        </a>
+                                    </th:block>
+                                    <th:block th:unless="${product.imageLink == ''}">
+                                        <a class="gallery_img" th:href="${product.imageLink}">
+                                            <img class="d-block w-100" th:src="${product.imageLink}" alt="Ảnh 1">
+                                        </a>
+                                    </th:block>
+                                </div>
+                                <div class="carousel-item">
+                                    <a class="gallery_img" th:href="@{/public/library/img/product-img/pro-big-2.jpg}">
+                                        <img class="d-block w-100" th:src="@{/public/library/img/product-img/pro-big-2.jpg}" alt="Ảnh 2">
+                                    </a>
+                                </div>
+                                <div class="carousel-item">
+                                    <a class="gallery_img" th:href="@{/public/library/img/product-img/pro-big-3.jpg}">
+                                        <img class="d-block w-100" th:src="@{/public/library/img/product-img/pro-big-3.jpg}" alt="Ảnh 3">
+                                    </a>
+                                </div>
+                                <div class="carousel-item">
+                                    <a class="gallery_img" th:href="@{/public/library/img/product-img/pro-big-4.jpg}">
+                                        <img class="d-block w-100" th:src="@{/public/library/img/product-img/pro-big-4.jpg}" alt="Ảnh 4">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-5">
+                    <div class="single_product_desc">
+                        <!-- Product Meta Data -->
+                        <div class="product-meta-data">
+                            <div class="line"></div>
+                            <p class="product-price">
+                                <th:block th:if="${product.price > 0}">
+                                    ĐƠN GIÁ: [[${#numbers.formatInteger(product.price,3,'POINT')}]] VNĐ
+                                </th:block>
+                                <th:block th:unless="${product.price > 0}">
+                                    Chưa có giá
+                                </th:block>
+                            </p>
+                            <a>
+                                <h6>[[${product.name}]]</h6>
+                            </a>
+                            <!-- Ratings & Review -->
+                            <div class="ratings-review mb-15 d-flex align-items-center justify-content-between">
+                                <div class="ratings">
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                </div>
+                                <div class="review">
+                                   <a>
+                                       <th:block th:if="${product.quantity == null}">
+                                           Chưa có thông tin số lượng
+                                       </th:block>
+                                       Số lượng: [[${product.quantity}]] sản phẩm
+                                   </a>
+                                </div>
+                            </div>
+                            <!-- Avaiable -->
+                            <th:block th:if="${product.status == 1}">
+                                <p class="avaibility"><i class="fa fa-circle"></i> Đang còn hàng</p>
+                            </th:block>
+                            <th:block th:if="${product.status == 2}">
+                                <p class="avaibility"><i class="fa fa-circle"></i> Đang giảm giá</p>
+                            </th:block>
+                            <th:block th:if="${product.status == 3}">
+                                <p class="avaibility"><i class="fa fa-circle"></i> Sắp ra mắt</p>
+                            </th:block>
+                            <th:block th:if="${product.status == 4}">
+                                <p class="avaibility"><i class="fa fa-circle"></i> Tạm hết hàng</p>
+                            </th:block>
+                            <br>
+                            <p>
+                                <th:block th:if="${product.categoryName == ''}">
+                                    Chưa có thông tin loại sản phẩm
+                                </th:block>
+                                Loại sản phẩm: [[${product.categoryName}]]
+                            </p>
+                            <p>
+                                <th:block th:if="${product.manufacturerName == ''}">
+                                    Chưa có thông tin hãng sản xuất
+                                </th:block>
+                                Hãng sản xuất: [[${product.manufacturerName}]]
+                            </p>
+
+                        </div>
+
+
+                        <div class="short_overview my-5">
+                            <hr>
+                            <p>
+                                <th:block th:if="${product.content == ''}">
+                                    Chưa có nội dung ghi chú
+                                </th:block>
+                                [[${product.content}]]
+                            </p>
+                        </div>
+
+                        <!--&lt;!&ndash; Add to Cart Form &ndash;&gt;
+                        <form class="cart clearfix" method="post">
+                            <div class="cart-btn d-flex mb-50">
+                                <p>Qty</p>
+                                <div class="quantity">
+                                    <span class="qty-minus" onclick="var effect = document.getElementById('qty'); var qty = effect.value; if( !isNaN( qty ) &amp;&amp; qty > 1 ) effect.value&#45;&#45;;return false;"><i class="fa fa-caret-down" aria-hidden="true"></i></span>
+                                    <input type="number" class="qty-text" id="qty" step="1" min="1" max="300" name="quantity" value="1">
+                                    <span class="qty-plus" onclick="var effect = document.getElementById('qty'); var qty = effect.value; if( !isNaN( qty )) effect.value++;return false;"><i class="fa fa-caret-up" aria-hidden="true"></i></span>
+                                </div>
+                            </div>
+                            <button type="submit" name="addtocart" value="5" class="btn amado-btn">Add to cart</button>
+                        </form>-->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="public_script"></th:block>
+</body>
+</html>
