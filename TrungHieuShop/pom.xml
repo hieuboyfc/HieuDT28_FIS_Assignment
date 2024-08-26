@@ -22,7 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <swagger.version>2.9.2</swagger.version>
+        <swagger.version>2.10.0</swagger.version>
         <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
         <apachepoi.version>4.0.0</apachepoi.version>
         <commonslang.version>3.7</commonslang.version>
